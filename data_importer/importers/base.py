@@ -6,7 +6,6 @@ import re
 from django.db import transaction
 from django.db.models.fields import FieldDoesNotExist
 from django.core.exceptions import ValidationError
-from django.utils.encoding import force_unicode
 from data_importer.core.descriptor import ReadDescriptor
 from data_importer.core.exceptions import StopImporter
 from data_importer.core.base import objclass2dict
@@ -14,6 +13,8 @@ from data_importer.core.base import DATA_IMPORTER_EXCEL_DECODER
 from data_importer.core.base import DATA_IMPORTER_DECODER
 from collections import OrderedDict
 import traceback
+import sys
+import io
 
 ALPHABETIC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 FACTOR = 26
@@ -21,6 +22,13 @@ FACTOR = 26
 DELAY = 1
 
 REGEX_NUMBER = r'\d+'
+
+if sys.version_info >= (3, 0):
+    unicode = str
+    file = io.IOBase
+    from django.utils.encoding import force_text as force_unicode
+else:
+    from django.utils.encoding import force_unicode
 
 
 class BaseImporter(object):
@@ -397,7 +405,9 @@ class BaseImporter(object):
 
     @staticmethod
     def convert_list_number_to_decimal_integer(list_number):
-        list_number_reversed = list(reversed(list_number))
+        print(type(list_number))
+
+        list_number_reversed = list(reversed(list(list_number)))
         final_number = 0
         for number, exp in zip(list_number_reversed, range(len(list_number_reversed))):
             final_number += (number + DELAY) * (FACTOR ** exp)

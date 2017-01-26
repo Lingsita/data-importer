@@ -3,6 +3,8 @@
 import datetime
 import xlrd
 from django.db.models.fields.files import FieldFile
+import sys
+
 #from xlrd/biffh.py
 # (
 #     XL_CELL_EMPTY,
@@ -13,6 +15,9 @@ from django.db.models.fields.files import FieldFile
 #     XL_CELL_ERROR,
 #     XL_CELL_BLANK,  # for use in debugging, gathering stats, etc
 # ) = range(7)
+
+if sys.version_info >= (3, 0):
+    xrange = range
 
 
 class XLSReader(object):
